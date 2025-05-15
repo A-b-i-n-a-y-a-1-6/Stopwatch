@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stylish Stopwatch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    /* Animated background */
+    body {
+      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #000000);
+      background-size: 400% 400%;
+      animation: gradientBG 10s ease infinite;
+      font-family: 'Orbitron', sans-serif;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    .container {
+      backdrop-filter: blur(15px);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 30px 40px;
+      border-radius: 25px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+      text-align: center;
+      width: 350px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #00ffff;
+      font-size: 28px;
+    }
+
+    #display {
+      font-size: 48px;
+      margin-bottom: 25px;
+      letter-spacing: 2px;
+    }
+
+    .buttons button {
+      background: #00ffff;
+      border: none;
+      color: black;
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      font-weight: bold;
+    }
+
+    .buttons button:hover {
+      background-color: #00cccc;
+      transform: scale(1.05);
+    }
+
+    .buttons button:active {
+      background-color: #009999;
+    }
+
+    #laps {
+      margin-top: 20px;
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 0;
+      list-style: none;
+    }
+
+    #laps li {
+      background: rgba(0, 255, 255, 0.1);
+      margin: 6px;
+      padding: 10px;
+      border-radius: 8px;
+      border-left: 4px solid #00ffff;
+      font-size: 16px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⏱️ Stylish Stopwatch</h1>
+    <div id="display">00:00:00</div>
+    <div class="buttons">
+      <button onclick="start()">Start</button>
+      <button onclick="pause()">Pause</button>
+      <button onclick="reset()">Reset</button>
+      <button onclick="lap()">Lap</button>
+    </div>
+    <ul id="laps"></ul>
+  </div>
+
+  <script>
+    let timer;
+    let startTime;
+    let elapsedTime = 0;
+    let running = false;
+
+    function updateDisplay() {
+      const time = Date.now() - startTime + elapsedTime;
+      const hours = Math.floor(time / 3600000);
+      const minutes = Math.floor((time % 3600000) / 60000);
+      const seconds = Math.floor((time % 60000) / 1000);
+
+      document.getElementById('display').textContent =
+        `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+    }
+
+    function pad(num) {
+      return num.toString().padStart(2, '0');
+    }
+
+    function start() {
+      if (!running) {
+        startTime = Date.now();
+        timer = setInterval(updateDisplay, 1000);
+        running = true;
+      }
+    }
+
+    function pause() {
+      if (running) {
+        clearInterval(timer);
+        elapsedTime += Date.now() - startTime;
+        running = false;
+      }
+    }
+
+    function reset() {
+      clearInterval(timer);
+      elapsedTime = 0;
+      running = false;
+      document.getElementById('display').textContent = "00:00:00";
+      document.getElementById('laps').innerHTML = "";
+    }
+
+    function lap() {
+      if (running) {
+        const lapTime = document.getElementById('display').textContent;
+        const li = document.createElement('li');
+        li.textContent = `Lap: ${lapTime}`;
+        document.getElementById('laps').appendChild(li);
+      }
+    }
+  </script>
+</body>
+</html>
